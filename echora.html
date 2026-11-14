@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#04050b">
+<meta name="description" content="A little music app made for Kirti. An idea by Subham, built by NOTHINGNESS.">
+<meta property="og:title" content="Echora — made for Kirti">
+<meta property="og:description" content="A little music app made for Kirti. An idea by Subham, built by NOTHINGNESS.">
+<title>Echora — made for Kirti</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2305060d'/%3E%3Cpath d='M5 9v6M9 6v12M12 4v16M15 7v10M19 10v4' stroke='%23a9d6ff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#04050b;--ice:#a9d6ff;--violet:#8c7ae6;--gold:#e8d5b0;--text:#eef2fa;--mute:#9aa6bc;--line:rgba(169,214,255,.14);--ease:cubic-bezier(.16,.8,.2,1);--serif:"Cormorant Garamond","Iowan Old Style",Georgia,serif;--sans:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+html.lock,html.lock body{overflow:hidden;height:100%}
+body{margin:0;min-width:320px;color:var(--text);font:400 15px/1.7 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:radial-gradient(ellipse at 15% 10%,rgba(39,91,153,.28),transparent 40%),radial-gradient(ellipse at 85% 30%,rgba(100,75,162,.2),transparent 38%),linear-gradient(160deg,#070a16,#04050b 55%,#090b19)}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+#stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;opacity:.7}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0}
+
+/* ---------- 3D ARRIVAL ---------- */
+#intro{position:fixed;inset:0;z-index:100;perspective:1400px;overflow:hidden}
+.door{position:absolute;top:0;bottom:0;width:50.2%;background:radial-gradient(ellipse at 50% 50%,#0b1330,#04050b 70%);transition:transform 1.5s var(--ease) .45s}
+.dl{left:0;transform-origin:0 50%;box-shadow:inset -1px 0 rgba(169,214,255,.3)}.dr{right:0;transform-origin:100% 50%;box-shadow:inset 1px 0 rgba(169,214,255,.3)}
+.out .dl{transform:rotateY(-100deg)}.out .dr{transform:rotateY(100deg)}
+.stage{position:absolute;inset:0;perspective:900px;display:grid;place-items:center;transition:opacity .7s ease,transform 1.2s ease-in}
+.out .stage,.out .tbox{opacity:0}.out .stage{transform:scale(1.5)}
+.cam{width:0;height:0;transform-style:preserve-3d;transform:translateZ(-1800px) rotateX(66deg);transition:transform 3.4s var(--ease)}
+.go .cam{transform:translateZ(-330px) rotateX(66deg)}
+.ring{position:absolute;transform-style:preserve-3d;animation:spin 16s linear infinite}
+.ring.b{animation-duration:22s;animation-direction:reverse}
+.bar{position:absolute;left:-2px;top:-70px;width:4px;height:140px;transform:rotateY(calc(var(--i)*7.5deg)) translateZ(var(--r))}
+.bar::after{content:"";display:block;height:100%;border-radius:4px;transform-origin:50% 100%;background:linear-gradient(to top,var(--c1),var(--c2));box-shadow:0 0 14px var(--c1);animation:eq 1.9s ease-in-out infinite;animation-delay:calc(var(--i)*-.11s)}
+.a{--r:360px;--c1:#6b82bc;--c2:#d4ecff}.b{--r:250px;--c1:#8c7ae6;--c2:#e8d5b0}
+.core{position:absolute;width:min(70vmin,520px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(169,214,255,.2),rgba(140,122,230,.1) 40%,transparent 68%);transform:scale(.2);opacity:0;transition:transform 3s var(--ease) .4s,opacity 2s ease .4s}
+.go .core{transform:scale(1);opacity:1}
+.tbox{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;perspective:800px;padding:0 20px;transition:opacity .5s ease}
+.word{font:italic 400 clamp(76px,22vw,170px)/1 var(--serif);letter-spacing:-.02em;display:flex;margin:0;text-shadow:0 0 50px rgba(169,214,255,.5)}
+.word span{display:inline-block;opacity:0;transform:translateZ(-700px) rotateX(80deg) translateY(60px);filter:blur(16px);transition:transform 1.6s var(--ease) var(--d),opacity 1.1s ease var(--d),filter 1.4s ease var(--d)}
+.go .word span{opacity:1;transform:none;filter:none}
+.line{margin:14px 0 0;font-size:clamp(11px,3vw,14px);letter-spacing:.9em;color:var(--mute);opacity:0;transform:translateY(14px) rotateX(-50deg);transition:letter-spacing 2.2s var(--ease) var(--t),opacity 1.4s ease var(--t),transform 1.6s var(--ease) var(--t)}
+.line b{font-weight:700;color:var(--gold)}.line.n b{color:var(--ice)}
+.go .line{opacity:1;letter-spacing:.28em;transform:none}
+#skip{position:absolute;z-index:3;right:20px;bottom:calc(22px + env(safe-area-inset-bottom));background:none;border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:12px;color:var(--mute);cursor:pointer}
+
+/* ---------- SITE ---------- */
+.site{position:relative;z-index:1}
+.shell{width:min(1160px,calc(100% - 40px));margin:0 auto}
+.top{height:80px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
+.brand{display:flex;align-items:center;gap:11px;font:italic 500 25px var(--serif);letter-spacing:.02em}
+.mark{width:32px;height:32px;border:1px solid rgba(169,214,255,.4);border-radius:50%;display:grid;place-items:center;color:var(--ice);box-shadow:0 0 24px rgba(97,159,223,.18)}.mark svg{width:16px}
+.nav{display:flex;align-items:center;gap:28px;font-size:13px;color:#b3bdd0}.nav a:hover{color:var(--ice)}
+.pill{border:1px solid rgba(169,214,255,.3);padding:10px 18px;border-radius:99px;background:rgba(169,214,255,.07);color:var(--text)}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center;min-height:calc(100svh - 80px);padding:50px 0 70px}
+.tag{display:inline-flex;align-items:center;gap:10px;padding:7px 15px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);font-size:13px;color:#c6d3e7}
+.tag i{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+h1{font-size:clamp(50px,7vw,92px);line-height:.98;letter-spacing:-.03em;margin:26px 0 22px}
+h1 em{background:linear-gradient(100deg,var(--ice),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.lead{max-width:490px;color:#aab4c8;font-size:16px}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+.btn{position:relative;overflow:hidden;min-height:52px;padding:0 26px;border-radius:99px;border:1px solid transparent;display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:14px;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s}
+.btn:hover:not(:disabled){transform:translateY(-3px)}
+.main{color:#0a1020;background:linear-gradient(115deg,var(--gold),#c9e4ff);box-shadow:0 12px 40px rgba(169,214,255,.22)}
+.main::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:shine 4.5s ease-in-out 5s infinite}
+.main:disabled{opacity:.7;cursor:not-allowed}
+.ghost{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.14);backdrop-filter:blur(10px)}
+.note{margin-top:14px;font-size:12px;color:#7f8ca5}
+.art{position:relative;min-height:520px;display:grid;place-items:center;perspective:1300px}
+.orbit{position:absolute;width:min(480px,100%);aspect-ratio:1;border:1px solid rgba(169,214,255,.16);border-radius:50%;transform:rotateX(68deg) rotateZ(-22deg);box-shadow:0 0 70px rgba(71,123,190,.1),inset 0 0 60px rgba(71,123,190,.06);animation:orb 24s linear infinite}
+.orbit::before{content:"";position:absolute;inset:12%;border:1px dashed rgba(140,122,230,.25);border-radius:50%}
+.arrive{transform-style:preserve-3d}.float{transform-style:preserve-3d;animation:bob 7s ease-in-out infinite}
+#dev{position:relative;width:280px;height:455px;transform-style:preserve-3d;transform:rotateY(-18deg) rotateX(6deg) rotateZ(-4deg);transition:transform .25s ease-out}
+.phone{position:absolute;inset:0;border-radius:38px;padding:10px;background:linear-gradient(135deg,#7283a1,#202b42 25%,#111a2e 72%,#58677f);box-shadow:24px 34px 70px rgba(0,0,0,.55),0 0 80px rgba(97,159,223,.14),inset 1px 1px 1px rgba(255,255,255,.4);transform:translateZ(25px)}
+.scr{height:100%;border-radius:30px;padding:22px 18px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:radial-gradient(circle at 45% 35%,rgba(105,128,188,.26),transparent 45%),linear-gradient(160deg,#111a34,#080c19 72%)}
+.st{display:flex;justify-content:space-between;align-items:center;font:italic 15px var(--serif);color:#b8c9e5}
+.st i{width:6px;height:6px;border-radius:50%;background:var(--ice);box-shadow:0 0 12px var(--ice)}
+.cover{position:relative;margin:30px auto 20px;width:185px;height:185px;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 47%,rgba(169,214,255,.75),transparent 20%),radial-gradient(ellipse at 52% 62%,#4a5b8c,transparent 50%),linear-gradient(150deg,#101d3b,#312b59 58%,#0c142b);box-shadow:0 18px 40px rgba(0,0,0,.4),0 0 34px rgba(113,141,203,.2)}
+.cover::before{content:"";position:absolute;width:132px;height:132px;left:26px;top:22px;border:1px solid rgba(220,232,255,.55);border-radius:50%;animation:spin2 18s linear infinite;border-top-color:var(--gold)}
+.cover b{position:absolute;left:84px;top:74px;color:#f0dfc4;font-size:20px;text-shadow:0 0 18px #c9e4ff}
+.tn{font:italic 22px var(--serif);text-align:center}.ta{font-size:11px;text-align:center;color:#8494b3;margin-top:3px}
+.wave{display:flex;height:30px;gap:3px;justify-content:center;align-items:center;margin:18px 2px 12px}
+.wave i{width:2px;height:var(--h);border-radius:5px;background:linear-gradient(to top,#6b82bc,#b3ddfa);animation:eq2 1.4s ease-in-out infinite;animation-delay:calc(var(--k)*-.07s)}
+.prog{height:2px;margin:0 6px;background:rgba(192,210,238,.17)}.prog::before{content:"";display:block;height:100%;background:var(--ice);box-shadow:0 0 9px var(--ice);animation:fill 26s linear infinite}
+.ctl{display:flex;justify-content:center;align-items:center;gap:26px;margin-top:20px;color:#b8cbe5}
+.ctl span:nth-child(2){width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#10192d;background:linear-gradient(140deg,#e9d9bd,#abd8ff);box-shadow:0 0 22px rgba(169,214,255,.3)}
+.chip{position:absolute;z-index:4;padding:12px 16px;border:1px solid rgba(169,214,255,.22);border-radius:14px;background:rgba(9,15,32,.6);backdrop-filter:blur(14px);box-shadow:0 14px 36px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.07);font-size:12px;color:#c6d3e7}
+.chip small{display:block;color:var(--gold);font-size:11px}
+.c1{top:70px;left:-6px;animation:bob 6s ease-in-out -2s infinite}.c2{bottom:64px;right:-10px;animation:bob 8s ease-in-out -4s infinite}
+.sec{padding:96px 0;border-top:1px solid rgba(255,255,255,.06)}
+.head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:38px}
+h2{font-size:clamp(38px,5vw,60px);letter-spacing:-.03em;line-height:1.02}
+.head p{max-width:380px;color:#8f9bb1;margin:0;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;perspective:1000px}
+.card{padding:26px;min-height:200px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(22,34,64,.62),rgba(8,12,25,.5));backdrop-filter:blur(12px);box-shadow:inset 0 1px rgba(255,255,255,.05);opacity:0;transform:rotateX(24deg) translateY(36px) translateZ(-60px);transition:opacity .9s ease var(--d),transform 1.1s var(--ease) var(--d),border-color .3s,background .3s}
+.card.in{opacity:1;transform:none}.card.in:hover{transform:translateY(-6px);border-color:rgba(169,214,255,.36);transition-delay:0s}
+.ico{width:38px;height:38px;margin-bottom:22px;border:1px solid rgba(169,214,255,.26);border-radius:12px;display:grid;place-items:center;color:var(--ice);background:rgba(169,214,255,.06)}
+.card h3{font-size:26px;margin-bottom:8px;line-height:1.1}.card p{margin:0;font-size:14px;color:#94a0b6;max-width:290px}
+.panel{position:relative;overflow:hidden;border:1px solid rgba(169,214,255,.22);border-radius:28px;padding:clamp(28px,6vw,60px);background:linear-gradient(130deg,rgba(18,27,52,.9),rgba(7,10,21,.92));box-shadow:0 30px 90px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.08)}
+.panel::before{content:"";position:absolute;width:620px;height:620px;right:-200px;top:-260px;border-radius:50%;background:conic-gradient(from 0deg,rgba(140,122,230,.35),transparent 30%,rgba(169,214,255,.28) 55%,transparent 80%,rgba(232,213,176,.25));filter:blur(60px);animation:spin 20s linear infinite}
+.panel>*{position:relative}.panel p{max-width:520px;color:#a3afc3}
+.stat{display:flex;align-items:center;gap:10px;margin-top:24px;font-size:13px;color:#aebbd0}
+.stat i{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold)}.stat.ok i{background:#8fe3b5;box-shadow:0 0 12px #8fe3b5}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px;counter-reset:s}
+.step{border-left:1px solid rgba(169,214,255,.28);padding-left:18px;counter-increment:s}
+.step::before{content:counter(s);font:italic 34px var(--serif);color:var(--ice)}
+.step h3{font-size:23px;margin:4px 0 6px}.step p{margin:0;font-size:14px;color:#8d9ab1}
+.credits{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0}
+.credits div{padding:22px 24px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)}
+.credits small{color:var(--mute);font-size:12px}.credits b{display:block;font:italic 400 32px/1.15 var(--serif);margin-top:4px}
+.credits div:nth-child(2) b{letter-spacing:.14em;font-style:normal;font-size:25px;line-height:1.5;color:var(--gold)}
+footer{padding:28px 0 calc(34px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.06);color:#6f7c95;font-size:13px}
+.fi{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:50;transform:translate(-50%,30px);opacity:0;padding:13px 20px;border-radius:99px;border:1px solid var(--line);background:rgba(10,16,34,.85);backdrop-filter:blur(16px);font-size:13px;transition:.5s var(--ease);pointer-events:none;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.rise{opacity:0}.ready .rise{animation:rise 1.1s var(--ease) both;animation-delay:calc(var(--n)*.12s)}
+.ready .arrive{animation:land 2s var(--ease) .15s both}.arrive{opacity:0}
+@keyframes spin{to{transform:rotateY(360deg)}}@keyframes spin2{to{transform:rotate(360deg)}}
+@keyframes orb{to{transform:rotateX(68deg) rotateZ(338deg)}}
+@keyframes eq{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}@keyframes eq2{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+@keyframes fill{from{width:0}to{width:100%}}@keyframes bob{50%{transform:translateY(-14px)}}
+@keyframes shine{0%{left:-60%}22%,100%{left:140%}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes land{from{opacity:0;transform:translateZ(-900px) translateY(120px) rotateY(70deg) rotateX(24deg)}to{opacity:1;transform:none}}
+@media(max-width:860px){.hero{grid-template-columns:1fr;min-height:0;padding-top:44px}.art{min-height:500px}.grid,.credits,.steps{grid-template-columns:1fr 1fr}.head{display:block}.head p{margin-top:14px}.steps{grid-template-columns:1fr}.sec{padding:70px 0}}
+@media(max-width:560px){.nav a:not(.pill){display:none}.grid,.credits{grid-template-columns:1fr}.cta .btn{width:100%;justify-content:center}.c1{left:0}.c2{right:0}.art{transform:scale(.92);margin:-8px 0}.a{--r:290px}.b{--r:200px}.go .cam{transform:translateZ(-250px) rotateX(66deg)}.line{letter-spacing:.9em}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}.card,.rise,.arrive{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="intro" role="presentation">
+  <div class="door dl"></div><div class="door dr"></div>
+  <div class="stage"><div class="core"></div><div class="cam"><div class="ring a"></div><div class="ring b"></div></div></div>
+  <div class="tbox">
+    <h1 class="word" id="word" aria-label="Echora"></h1>
+    <p class="line" style="--t:2.8s">Powered by <b>NOTHINGNESS</b></p>
+    <p class="line n" style="--t:3.7s">An idea by <b>Subham</b></p>
+  </div>
+  <button id="skip" type="button">Skip intro</button>
+</div>
+
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<div class="site">
+  <header class="shell top rise" style="--n:0">
+    <a class="brand" href="#top" aria-label="Echora home"><span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8.5v7M8 5.5v13M12 3v18M16 6v12M20 9v6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>Echora</a>
+    <nav class="nav" aria-label="Main"><a href="#why">A bit about Echora</a><a href="#install">Installation help</a><a class="pill" href="#download">Download</a></nav>
+  </header>
+
+  <main>
+    <section class="shell hero" id="top">
+      <div>
+        <span class="tag rise" style="--n:1"><i></i>Just for Kirti</span>
+        <h1 class="rise" style="--n:2">Your songs,<br>all in <em>one place.</em></h1>
+        <p class="lead rise" style="--n:3">Kirti, I put this together for you. Your songs and lyrics are here, along with a few little things I thought you might like. Hope you enjoy it.</p>
+        <div class="cta rise" style="--n:4">
+          <button class="btn main dl-btn" type="button"><span class="lbl">Get Echora for Android</span><span aria-hidden="true">↓</span></button>
+          <a class="btn ghost" href="#why">Take a look around</a>
+        </div>
+        <div class="note rise" style="--n:5" id="note">Android 8.0 or later · free APK</div>
+      </div>
+      <div class="art rise" style="--n:3" aria-label="Echora music player preview">
+        <div class="orbit"></div>
+        <div class="chip c1"><small>Taking a break</small>No hurry.</div>
+        <div class="chip c2"><small>Now playing</small>One of your favourites.</div>
+        <div class="arrive"><div class="float"><div id="dev">
+          <div class="phone"><div class="scr">
+            <div class="st"><span>Echora</span><i></i></div>
+            <div class="cover"><b>✦</b></div>
+            <div class="tn">A song for now</div><div class="ta">Just press play</div>
+            <div class="wave" id="wave"></div><div class="prog"></div>
+            <div class="ctl"><span>‹‹</span><span>▶</span><span>››</span></div>
+          </div></div>
+        </div></div></div>
+      </div>
+    </section>
+
+    <section class="sec" id="why"><div class="shell">
+      <div class="head"><div><h2>A few things<br>you'll find inside.</h2></div><p>It's pretty simple: your music, lyrics that keep up, and a few personal touches.</p></div>
+      <div class="grid" id="grid"></div>
+    </div></section>
+
+    <section class="sec" id="download"><div class="shell">
+      <div class="panel">
+        <h2>Whenever you're ready,<br>Kirti.</h2>
+        <p style="margin:18px 0 0">Download Echora on your Android phone. Once the APK finishes downloading, open it to install the app.</p>
+        <div class="cta"><button class="btn main dl-btn" type="button"><span class="lbl">Download the APK</span><span aria-hidden="true">↓</span></button><a class="btn ghost" href="#install">Installation help</a></div>
+        <div class="stat" id="stat"><i></i><span>Checking if the APK is here…</span></div>
+      </div>
+      <div class="steps" id="install">
+        <div class="step"><h3>Download Echora</h3><p>Tap the button above and wait for the APK to finish downloading.</p></div>
+        <div class="step"><h3>Install the app</h3><p>Open the downloaded file. If Android asks, allow your browser to install apps.</p></div>
+        <div class="step"><h3>That's it</h3><p>Open Echora, pick a song you like, and press play.</p></div>
+      </div>
+    </div></section>
+
+    <section class="sec"><div class="shell credits">
+      <div><small>An idea by</small><b>Subham</b></div>
+      <div><small>Built by</small><b>NOTHINGNESS</b></div>
+      <div><small>Made for</small><b>Kirti</b></div>
+    </div></section>
+  </main>
+
+  <footer><div class="shell fi"><span>Echora · made for Kirti</span><span>An idea by Subham · Built by NOTHINGNESS</span></div></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(()=>{
+"use strict";
+/* Put your APK beside this file and name it echora.apk (or change the path). */
+const APK_URL="./echora.apk";
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $=s=>document.querySelector(s),root=document.documentElement;
+
+/* ---- build the 3D waveform rings + title letters ---- */
+["a","b"].forEach(c=>{const r=$(".ring."+c);r.innerHTML=Array.from({length:48},(_,i)=>`<i class="bar" style="--i:${i}"></i>`).join("")});
+$("#word").innerHTML=[..."Echora"].map((c,i)=>`<span style="--d:${(.9+i*.12).toFixed(2)}s">${c}</span>`).join("");
+$("#wave").innerHTML=Array.from({length:44},(_,k)=>`<i style="--h:${6+Math.abs(Math.sin(k*1.7)*18+Math.cos(k*.6)*5)|0}px;--k:${k}"></i>`).join("");
+$("#grid").innerHTML=[["♫","All your songs in one place","Pick a song and press play. That's really all there is to it."],["〽","Lyrics that keep up","The lyrics move along with the song, so you can follow each line."],["✧","Little moments","Keep the little things here that you'd like to look back on."],["◌","A different icon every day","Echora gets a new icon each day of the week. There are seven in all."],["⌁","Make it yours","It's got a few personal details to make it feel like your own."],["☾","Take it slow","Choose a song, get comfortable, and enjoy it."]]
+ .map((f,i)=>`<article class="card" style="--d:${(i%3)*.1}s"><div class="ico" aria-hidden="true">${f[0]}</div><h3>${f[1]}</h3><p>${f[2]}</p></article>`).join("");
+
+/* ---- arrival timeline ---- */
+const intro=$("#intro");let done=false;
+const finish=()=>{if(done)return;done=true;intro.classList.add("out");
+ setTimeout(()=>root.classList.add("ready"),reduced?0:900);
+ setTimeout(()=>{intro.remove();root.classList.remove("lock")},reduced?0:2200)};
+root.classList.add("lock");
+if(reduced){finish()}else{
+ requestAnimationFrame(()=>requestAnimationFrame(()=>intro.classList.add("go")));
+ setTimeout(finish,6600);$("#skip").addEventListener("click",finish);intro.addEventListener("click",finish)}
+
+/* ---- scroll reveal for cards ---- */
+const io="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.15}):null;
+document.querySelectorAll(".card").forEach(c=>io?io.observe(c):c.classList.add("in"));
+
+/* ---- 3D tilt that follows the pointer ---- */
+const dev=$("#dev");
+if(!reduced&&matchMedia("(pointer:fine)").matches)addEventListener("pointermove",e=>{
+ const x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;
+ dev.style.transform=`rotateY(${-18+x*22}deg) rotateX(${6-y*16}deg) rotateZ(${-4+x*3}deg)`},{passive:true});
+
+/* ---- APK download ---- */
+const toast=$("#toast");let tt=0;
+const say=m=>{toast.textContent=m;toast.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove("on"),4200)};
+const setReady=ok=>{
+ document.querySelectorAll(".dl-btn").forEach(b=>{b.disabled=!ok;b.querySelector(".lbl").textContent=ok?(b.closest(".panel")?"Download the APK":"Get Echora for Android"):"APK not available yet"});
+ $("#stat").className="stat"+(ok?" ok":"");
+ $("#stat span").textContent=ok?"The APK is ready to download":"The APK is not here just yet";
+ $("#note").textContent=ok?"Android 8.0 or later · free APK":"The APK will be here soon."};
+setReady(true);
+fetch(APK_URL,{method:"HEAD"}).then(r=>{if(!r.ok)setReady(false)}).catch(()=>{});
+document.querySelectorAll(".dl-btn").forEach(b=>b.addEventListener("click",()=>{
+ const a=document.createElement("a");a.href=APK_URL;a.download="Echora.apk";document.body.appendChild(a);a.click();a.remove();
+ say("Your download has started. Open the APK when it is ready to install Echora.")}));
+
+/* ---- starfield ---- */
+const cv=$("#stars"),cx=cv.getContext("2d");let W,H,S=[];
+const size=()=>{const d=Math.min(devicePixelRatio||1,1.5);W=innerWidth;H=innerHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+ S=Array.from({length:Math.min(70,Math.max(26,W*H/22000|0))},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.25,a:Math.random()*.45+.12,v:Math.random()*.2+.04,p:Math.random()*6.3}))};
+const draw=t=>{cx.clearRect(0,0,W,H);for(const s of S){cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.283);cx.fillStyle=`rgba(190,218,255,${s.a*(.72+Math.sin(t*.0009*s.v*8+s.p)*.25)})`;cx.fill();if(!reduced){s.y-=s.v*.2;if(s.y<-2)s.y=H+2}}
+ if(!reduced&&!document.hidden)requestAnimationFrame(draw)};
+addEventListener("resize",size,{passive:true});document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!reduced)requestAnimationFrame(draw)});
+size();requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
